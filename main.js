@@ -113,39 +113,5 @@ define(function (require, exports, module) {
     "blockComment": ["{{!--", "--}}"]
   });
 
-  function _handleEventOn(editor) {
-
-  }
-
-
- /* $(EditorManager).on("activeEditorChange",
-    function (event, current, previous) {
-      if (previous && previous.getModeForDocument() === "handlebars") {
-
-      }
-      if (current.getModeForDocument() === "handlebars") {
-        console.log(current);
-        console.log(ExtensionUtils);
-
-        var ctx = TokenUtils.getInitialContext(current._codeMirror, {line:0, ch: 0}),
-            prevPos = {line: null, ch: null};
-        while (prevPos.line !== ctx.pos.line || prevPos.ch !== ctx.pos.ch) {
-          prevPos = {line: ctx.pos.line, ch: ctx.pos.ch}
-          if (ctx.token.state.overlay.inHandlebars) {
-            console.log("jere");
-            ctx.editor.markText({line: ctx.pos.line, ch: ctx.token.start},
-                                {line: ctx.pos.line, ch: ctx.token.end},
-                                {className: "CodeMirror-matchingtag"});
-          }
-          TokenUtils.moveNextToken(ctx);
-        }
-        //console.log("console change and mode is: " + current.getModeForDocument());
-        //console.log(current._codeMirror.getStateAfter());
-
-      }
-    }
-  ); */
-
-
 
 });

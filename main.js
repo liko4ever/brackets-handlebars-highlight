@@ -33,11 +33,11 @@ define(function (require, exports, module) {
           if (stream.match(/^[\w\d\-\_\$\.\/\@ # ! " =]+\s*\}\}/, false)) {
             state.inHandlebars = true;
           }
-          // In handlebars withou HTML escaping
+          // In handlebars without HTML escaping
           if (stream.match("{")) {
             state.inHandlebars = true;
             state.inNoEscape = true;
-            return "property handlebars";
+            return "def handlebars";
           }
           // Comments with {{}} in it
           if (stream.match(/^!--.+--\}\}/)) {
@@ -50,14 +50,16 @@ define(function (require, exports, module) {
           }
 
           if (state.inHandlebars) {
-            return "property handlebars";
+            return "def handlebars"; // Return def for {{
           } else {
-            return "meta handlebars";
+            return "meta handlebars"; //If there is {{ but not a valid handlebars return meta
           }
         }
-        if (stream.match(/^#/) && state.inHandlebars) {
 
+        //Built-in handlebars helpers
+        if (stream.match(/^#/) && state.inHandlebars) {
           helperName = stream.match(/^[\w\d\-\_\$]+/, true);
+          //Missing argument for helper return error
           if (stream.match(/\s*\}\}/, false)) {
             return "meta handlebars";
           } else {
@@ -73,10 +75,11 @@ define(function (require, exports, module) {
             if (helperName && state.helperList[state.helperList.length - 1] === helperName[0]) {
 
               state.helperList.pop();
-              return "keyword";
+              return "keyword handlebars";
             } else {
-              return "meta";
+              return "meta handlebars";
             }
+            //When there is a {{./foo}} or {{this/foo}}
           } else {
             stream.next();
             stream.next();
@@ -84,13 +87,27 @@ define(function (require, exports, module) {
             return null;
           }
         }
-        if (stream.match("}}")) {
+        if (stream.match(/\s*[\w\d\-\_\$]+\s*/) && state.inHandlebars)  {
+          if (state.inVariable) {
+            return "property handlebars"
+          }
+          state.inVariable = true;
+          return "variable-2 handlebars";
+        }
+        if (stream.match(/\./) && state.inHandlebars && state.inVariable) {
+            return "handlebars"
+          }
+        //if (stream.match(/[\s \.]+/) && state.inHandlebars) {
+          //console.log("here");
+          //return "handlebars";
+        //}
+        if (stream.match("}}") && state.inHandlebars) {
           state.inHandlebars = false;
           state.inHelper = false;
           state.inNoEscape = false;
-          return "property";
+          state.inVariable = false;
+          return "def handlebars";
         }
-
         stream.next();
         return null;
 
